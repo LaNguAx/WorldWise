@@ -3,13 +3,16 @@ import styles from "./CountryList.module.css";
 import CountryItem from "./CountryItem";
 import PropTypes from "prop-types";
 import Message from "./Message";
+import { useCities } from "../contexts/CitiesContext";
 
 CountryList.propTypes = {
   cities: PropTypes.array,
   isLoading: PropTypes.bool,
 };
 
-export default function CountryList({ cities, isLoading }) {
+export default function CountryList() {
+  const { cities, isLoading } = useCities();
+
   if (isLoading) return <Spinner />;
 
   if (!cities.length)
@@ -23,7 +26,10 @@ export default function CountryList({ cities, isLoading }) {
     cities
       .reduce(
         (acc, city) =>
-          acc.set(city.country, { country: city.country, emoji: city.emoji }),
+          acc.set(city.countryName, {
+            country: city.countryName,
+            emoji: city.emoji,
+          }),
         new Map()
       )
       .values()
@@ -32,7 +38,7 @@ export default function CountryList({ cities, isLoading }) {
   return (
     <ul className={styles.countryList}>
       {countries.map((country, i) => (
-        <CountryItem country={country} key={country.country} />
+        <CountryItem country={country} key={i} />
       ))}
     </ul>
   );
